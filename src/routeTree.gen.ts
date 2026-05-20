@@ -9,9 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as PublicRouteImport } from './routes/_public'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as PublicIndexRouteImport } from './routes/_public.index'
+import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
+import { Route as DashboardPaymentsRouteImport } from './routes/dashboard.payments'
+import { Route as DashboardBookingsRouteImport } from './routes/dashboard.bookings'
 import { Route as AuthRegisterRouteImport } from './routes/auth.register'
 import { Route as AuthLoginRouteImport } from './routes/auth.login'
 import { Route as AuthForgotRouteImport } from './routes/auth.forgot'
@@ -19,9 +24,15 @@ import { Route as PublicVerifyRouteImport } from './routes/_public.verify'
 import { Route as PublicFaqRouteImport } from './routes/_public.faq'
 import { Route as PublicContactRouteImport } from './routes/_public.contact'
 import { Route as PublicAboutRouteImport } from './routes/_public.about'
+import { Route as DashboardBookingsRefRouteImport } from './routes/dashboard.bookings.$ref'
 import { Route as PublicFlightsSearchRouteImport } from './routes/_public.flights.search'
 import { Route as PublicFlightsIdRouteImport } from './routes/_public.flights.$id'
 
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -31,10 +42,30 @@ const PublicRoute = PublicRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicRoute,
+} as any)
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardPaymentsRoute = DashboardPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardBookingsRoute = DashboardBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => DashboardRoute,
 } as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/register',
@@ -71,6 +102,11 @@ const PublicAboutRoute = PublicAboutRouteImport.update({
   path: '/about',
   getParentRoute: () => PublicRoute,
 } as any)
+const DashboardBookingsRefRoute = DashboardBookingsRefRouteImport.update({
+  id: '/$ref',
+  path: '/$ref',
+  getParentRoute: () => DashboardBookingsRoute,
+} as any)
 const PublicFlightsSearchRoute = PublicFlightsSearchRouteImport.update({
   id: '/flights/search',
   path: '/flights/search',
@@ -85,6 +121,7 @@ const PublicFlightsIdRoute = PublicFlightsIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/auth': typeof AuthRouteWithChildren
+  '/dashboard': typeof DashboardRouteWithChildren
   '/about': typeof PublicAboutRoute
   '/contact': typeof PublicContactRoute
   '/faq': typeof PublicFaqRoute
@@ -92,8 +129,13 @@ export interface FileRoutesByFullPath {
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/dashboard/bookings': typeof DashboardBookingsRouteWithChildren
+  '/dashboard/payments': typeof DashboardPaymentsRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/flights/$id': typeof PublicFlightsIdRoute
   '/flights/search': typeof PublicFlightsSearchRoute
+  '/dashboard/bookings/$ref': typeof DashboardBookingsRefRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
@@ -104,14 +146,20 @@ export interface FileRoutesByTo {
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/dashboard/bookings': typeof DashboardBookingsRouteWithChildren
+  '/dashboard/payments': typeof DashboardPaymentsRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/': typeof PublicIndexRoute
+  '/dashboard': typeof DashboardIndexRoute
   '/flights/$id': typeof PublicFlightsIdRoute
   '/flights/search': typeof PublicFlightsSearchRoute
+  '/dashboard/bookings/$ref': typeof DashboardBookingsRefRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_public': typeof PublicRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/dashboard': typeof DashboardRouteWithChildren
   '/_public/about': typeof PublicAboutRoute
   '/_public/contact': typeof PublicContactRoute
   '/_public/faq': typeof PublicFaqRoute
@@ -119,15 +167,21 @@ export interface FileRoutesById {
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/dashboard/bookings': typeof DashboardBookingsRouteWithChildren
+  '/dashboard/payments': typeof DashboardPaymentsRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/_public/': typeof PublicIndexRoute
+  '/dashboard/': typeof DashboardIndexRoute
   '/_public/flights/$id': typeof PublicFlightsIdRoute
   '/_public/flights/search': typeof PublicFlightsSearchRoute
+  '/dashboard/bookings/$ref': typeof DashboardBookingsRefRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
+    | '/dashboard'
     | '/about'
     | '/contact'
     | '/faq'
@@ -135,8 +189,13 @@ export interface FileRouteTypes {
     | '/auth/forgot'
     | '/auth/login'
     | '/auth/register'
+    | '/dashboard/bookings'
+    | '/dashboard/payments'
+    | '/dashboard/profile'
+    | '/dashboard/'
     | '/flights/$id'
     | '/flights/search'
+    | '/dashboard/bookings/$ref'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -147,13 +206,19 @@ export interface FileRouteTypes {
     | '/auth/forgot'
     | '/auth/login'
     | '/auth/register'
+    | '/dashboard/bookings'
+    | '/dashboard/payments'
+    | '/dashboard/profile'
     | '/'
+    | '/dashboard'
     | '/flights/$id'
     | '/flights/search'
+    | '/dashboard/bookings/$ref'
   id:
     | '__root__'
     | '/_public'
     | '/auth'
+    | '/dashboard'
     | '/_public/about'
     | '/_public/contact'
     | '/_public/faq'
@@ -161,18 +226,31 @@ export interface FileRouteTypes {
     | '/auth/forgot'
     | '/auth/login'
     | '/auth/register'
+    | '/dashboard/bookings'
+    | '/dashboard/payments'
+    | '/dashboard/profile'
     | '/_public/'
+    | '/dashboard/'
     | '/_public/flights/$id'
     | '/_public/flights/search'
+    | '/dashboard/bookings/$ref'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   PublicRoute: typeof PublicRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  DashboardRoute: typeof DashboardRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -187,12 +265,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_public/': {
       id: '/_public/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRoute
+    }
+    '/dashboard/profile': {
+      id: '/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/payments': {
+      id: '/dashboard/payments'
+      path: '/payments'
+      fullPath: '/dashboard/payments'
+      preLoaderRoute: typeof DashboardPaymentsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/bookings': {
+      id: '/dashboard/bookings'
+      path: '/bookings'
+      fullPath: '/dashboard/bookings'
+      preLoaderRoute: typeof DashboardBookingsRouteImport
+      parentRoute: typeof DashboardRoute
     }
     '/auth/register': {
       id: '/auth/register'
@@ -242,6 +348,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/about'
       preLoaderRoute: typeof PublicAboutRouteImport
       parentRoute: typeof PublicRoute
+    }
+    '/dashboard/bookings/$ref': {
+      id: '/dashboard/bookings/$ref'
+      path: '/$ref'
+      fullPath: '/dashboard/bookings/$ref'
+      preLoaderRoute: typeof DashboardBookingsRefRouteImport
+      parentRoute: typeof DashboardBookingsRoute
     }
     '/_public/flights/search': {
       id: '/_public/flights/search'
@@ -297,9 +410,39 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface DashboardBookingsRouteChildren {
+  DashboardBookingsRefRoute: typeof DashboardBookingsRefRoute
+}
+
+const DashboardBookingsRouteChildren: DashboardBookingsRouteChildren = {
+  DashboardBookingsRefRoute: DashboardBookingsRefRoute,
+}
+
+const DashboardBookingsRouteWithChildren =
+  DashboardBookingsRoute._addFileChildren(DashboardBookingsRouteChildren)
+
+interface DashboardRouteChildren {
+  DashboardBookingsRoute: typeof DashboardBookingsRouteWithChildren
+  DashboardPaymentsRoute: typeof DashboardPaymentsRoute
+  DashboardProfileRoute: typeof DashboardProfileRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardBookingsRoute: DashboardBookingsRouteWithChildren,
+  DashboardPaymentsRoute: DashboardPaymentsRoute,
+  DashboardProfileRoute: DashboardProfileRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   PublicRoute: PublicRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  DashboardRoute: DashboardRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
