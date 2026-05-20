@@ -9,51 +9,216 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as PublicRouteImport } from './routes/_public'
+import { Route as PublicIndexRouteImport } from './routes/_public.index'
+import { Route as PublicVerifyRouteImport } from './routes/_public.verify'
+import { Route as PublicFaqRouteImport } from './routes/_public.faq'
+import { Route as PublicContactRouteImport } from './routes/_public.contact'
+import { Route as PublicAboutRouteImport } from './routes/_public.about'
+import { Route as PublicFlightsSearchRouteImport } from './routes/_public.flights.search'
+import { Route as PublicFlightsIdRouteImport } from './routes/_public.flights.$id'
 
-const IndexRoute = IndexRouteImport.update({
+const PublicRoute = PublicRouteImport.update({
+  id: '/_public',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicVerifyRoute = PublicVerifyRouteImport.update({
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicFaqRoute = PublicFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicContactRoute = PublicContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicAboutRoute = PublicAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicFlightsSearchRoute = PublicFlightsSearchRouteImport.update({
+  id: '/flights/search',
+  path: '/flights/search',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicFlightsIdRoute = PublicFlightsIdRouteImport.update({
+  id: '/flights/$id',
+  path: '/flights/$id',
+  getParentRoute: () => PublicRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof PublicIndexRoute
+  '/about': typeof PublicAboutRoute
+  '/contact': typeof PublicContactRoute
+  '/faq': typeof PublicFaqRoute
+  '/verify': typeof PublicVerifyRoute
+  '/flights/$id': typeof PublicFlightsIdRoute
+  '/flights/search': typeof PublicFlightsSearchRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/about': typeof PublicAboutRoute
+  '/contact': typeof PublicContactRoute
+  '/faq': typeof PublicFaqRoute
+  '/verify': typeof PublicVerifyRoute
+  '/': typeof PublicIndexRoute
+  '/flights/$id': typeof PublicFlightsIdRoute
+  '/flights/search': typeof PublicFlightsSearchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_public': typeof PublicRouteWithChildren
+  '/_public/about': typeof PublicAboutRoute
+  '/_public/contact': typeof PublicContactRoute
+  '/_public/faq': typeof PublicFaqRoute
+  '/_public/verify': typeof PublicVerifyRoute
+  '/_public/': typeof PublicIndexRoute
+  '/_public/flights/$id': typeof PublicFlightsIdRoute
+  '/_public/flights/search': typeof PublicFlightsSearchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/faq'
+    | '/verify'
+    | '/flights/$id'
+    | '/flights/search'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/about'
+    | '/contact'
+    | '/faq'
+    | '/verify'
+    | '/'
+    | '/flights/$id'
+    | '/flights/search'
+  id:
+    | '__root__'
+    | '/_public'
+    | '/_public/about'
+    | '/_public/contact'
+    | '/_public/faq'
+    | '/_public/verify'
+    | '/_public/'
+    | '/_public/flights/$id'
+    | '/_public/flights/search'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  PublicRoute: typeof PublicRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof PublicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public/': {
+      id: '/_public/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicIndexRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/verify': {
+      id: '/_public/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof PublicVerifyRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/faq': {
+      id: '/_public/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof PublicFaqRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/contact': {
+      id: '/_public/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof PublicContactRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/about': {
+      id: '/_public/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof PublicAboutRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/flights/search': {
+      id: '/_public/flights/search'
+      path: '/flights/search'
+      fullPath: '/flights/search'
+      preLoaderRoute: typeof PublicFlightsSearchRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/flights/$id': {
+      id: '/_public/flights/$id'
+      path: '/flights/$id'
+      fullPath: '/flights/$id'
+      preLoaderRoute: typeof PublicFlightsIdRouteImport
+      parentRoute: typeof PublicRoute
     }
   }
 }
 
+interface PublicRouteChildren {
+  PublicAboutRoute: typeof PublicAboutRoute
+  PublicContactRoute: typeof PublicContactRoute
+  PublicFaqRoute: typeof PublicFaqRoute
+  PublicVerifyRoute: typeof PublicVerifyRoute
+  PublicIndexRoute: typeof PublicIndexRoute
+  PublicFlightsIdRoute: typeof PublicFlightsIdRoute
+  PublicFlightsSearchRoute: typeof PublicFlightsSearchRoute
+}
+
+const PublicRouteChildren: PublicRouteChildren = {
+  PublicAboutRoute: PublicAboutRoute,
+  PublicContactRoute: PublicContactRoute,
+  PublicFaqRoute: PublicFaqRoute,
+  PublicVerifyRoute: PublicVerifyRoute,
+  PublicIndexRoute: PublicIndexRoute,
+  PublicFlightsIdRoute: PublicFlightsIdRoute,
+  PublicFlightsSearchRoute: PublicFlightsSearchRoute,
+}
+
+const PublicRouteWithChildren =
+  PublicRoute._addFileChildren(PublicRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  PublicRoute: PublicRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
