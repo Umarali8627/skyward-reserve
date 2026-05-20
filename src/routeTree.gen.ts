@@ -11,8 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PublicIndexRouteImport } from './routes/_public.index'
 import { Route as DashboardProfileRouteImport } from './routes/dashboard.profile'
 import { Route as DashboardPaymentsRouteImport } from './routes/dashboard.payments'
@@ -20,6 +22,13 @@ import { Route as DashboardBookingsRouteImport } from './routes/dashboard.bookin
 import { Route as AuthRegisterRouteImport } from './routes/auth.register'
 import { Route as AuthLoginRouteImport } from './routes/auth.login'
 import { Route as AuthForgotRouteImport } from './routes/auth.forgot'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminSeatsRouteImport } from './routes/admin.seats'
+import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as AdminFlightsRouteImport } from './routes/admin.flights'
+import { Route as AdminBookingsRouteImport } from './routes/admin.bookings'
+import { Route as AdminAirportsRouteImport } from './routes/admin.airports'
+import { Route as AdminAirlinesRouteImport } from './routes/admin.airlines'
 import { Route as PublicVerifyRouteImport } from './routes/_public.verify'
 import { Route as PublicFaqRouteImport } from './routes/_public.faq'
 import { Route as PublicContactRouteImport } from './routes/_public.contact'
@@ -38,6 +47,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
@@ -46,6 +60,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
@@ -81,6 +100,41 @@ const AuthForgotRoute = AuthForgotRouteImport.update({
   id: '/forgot',
   path: '/forgot',
   getParentRoute: () => AuthRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSeatsRoute = AdminSeatsRouteImport.update({
+  id: '/seats',
+  path: '/seats',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFlightsRoute = AdminFlightsRouteImport.update({
+  id: '/flights',
+  path: '/flights',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBookingsRoute = AdminBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAirportsRoute = AdminAirportsRouteImport.update({
+  id: '/airports',
+  path: '/airports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAirlinesRoute = AdminAirlinesRouteImport.update({
+  id: '/airlines',
+  path: '/airlines',
+  getParentRoute: () => AdminRoute,
 } as any)
 const PublicVerifyRoute = PublicVerifyRouteImport.update({
   id: '/verify',
@@ -120,18 +174,27 @@ const PublicFlightsIdRoute = PublicFlightsIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
   '/about': typeof PublicAboutRoute
   '/contact': typeof PublicContactRoute
   '/faq': typeof PublicFaqRoute
   '/verify': typeof PublicVerifyRoute
+  '/admin/airlines': typeof AdminAirlinesRoute
+  '/admin/airports': typeof AdminAirportsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/flights': typeof AdminFlightsRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/seats': typeof AdminSeatsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/dashboard/bookings': typeof DashboardBookingsRouteWithChildren
   '/dashboard/payments': typeof DashboardPaymentsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
+  '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/flights/$id': typeof PublicFlightsIdRoute
   '/flights/search': typeof PublicFlightsSearchRoute
@@ -143,6 +206,13 @@ export interface FileRoutesByTo {
   '/contact': typeof PublicContactRoute
   '/faq': typeof PublicFaqRoute
   '/verify': typeof PublicVerifyRoute
+  '/admin/airlines': typeof AdminAirlinesRoute
+  '/admin/airports': typeof AdminAirportsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/flights': typeof AdminFlightsRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/seats': typeof AdminSeatsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
@@ -150,6 +220,7 @@ export interface FileRoutesByTo {
   '/dashboard/payments': typeof DashboardPaymentsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/': typeof PublicIndexRoute
+  '/admin': typeof AdminIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/flights/$id': typeof PublicFlightsIdRoute
   '/flights/search': typeof PublicFlightsSearchRoute
@@ -158,12 +229,20 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_public': typeof PublicRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/dashboard': typeof DashboardRouteWithChildren
   '/_public/about': typeof PublicAboutRoute
   '/_public/contact': typeof PublicContactRoute
   '/_public/faq': typeof PublicFaqRoute
   '/_public/verify': typeof PublicVerifyRoute
+  '/admin/airlines': typeof AdminAirlinesRoute
+  '/admin/airports': typeof AdminAirportsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/flights': typeof AdminFlightsRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/seats': typeof AdminSeatsRoute
+  '/admin/users': typeof AdminUsersRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
@@ -171,6 +250,7 @@ export interface FileRoutesById {
   '/dashboard/payments': typeof DashboardPaymentsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/_public/': typeof PublicIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/_public/flights/$id': typeof PublicFlightsIdRoute
   '/_public/flights/search': typeof PublicFlightsSearchRoute
@@ -180,18 +260,27 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/auth'
     | '/dashboard'
     | '/about'
     | '/contact'
     | '/faq'
     | '/verify'
+    | '/admin/airlines'
+    | '/admin/airports'
+    | '/admin/bookings'
+    | '/admin/flights'
+    | '/admin/payments'
+    | '/admin/seats'
+    | '/admin/users'
     | '/auth/forgot'
     | '/auth/login'
     | '/auth/register'
     | '/dashboard/bookings'
     | '/dashboard/payments'
     | '/dashboard/profile'
+    | '/admin/'
     | '/dashboard/'
     | '/flights/$id'
     | '/flights/search'
@@ -203,6 +292,13 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faq'
     | '/verify'
+    | '/admin/airlines'
+    | '/admin/airports'
+    | '/admin/bookings'
+    | '/admin/flights'
+    | '/admin/payments'
+    | '/admin/seats'
+    | '/admin/users'
     | '/auth/forgot'
     | '/auth/login'
     | '/auth/register'
@@ -210,6 +306,7 @@ export interface FileRouteTypes {
     | '/dashboard/payments'
     | '/dashboard/profile'
     | '/'
+    | '/admin'
     | '/dashboard'
     | '/flights/$id'
     | '/flights/search'
@@ -217,12 +314,20 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_public'
+    | '/admin'
     | '/auth'
     | '/dashboard'
     | '/_public/about'
     | '/_public/contact'
     | '/_public/faq'
     | '/_public/verify'
+    | '/admin/airlines'
+    | '/admin/airports'
+    | '/admin/bookings'
+    | '/admin/flights'
+    | '/admin/payments'
+    | '/admin/seats'
+    | '/admin/users'
     | '/auth/forgot'
     | '/auth/login'
     | '/auth/register'
@@ -230,6 +335,7 @@ export interface FileRouteTypes {
     | '/dashboard/payments'
     | '/dashboard/profile'
     | '/_public/'
+    | '/admin/'
     | '/dashboard/'
     | '/_public/flights/$id'
     | '/_public/flights/search'
@@ -238,6 +344,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   PublicRoute: typeof PublicRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
 }
@@ -258,6 +365,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public': {
       id: '/_public'
       path: ''
@@ -271,6 +385,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_public/': {
       id: '/_public/'
@@ -320,6 +441,55 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/forgot'
       preLoaderRoute: typeof AuthForgotRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/seats': {
+      id: '/admin/seats'
+      path: '/seats'
+      fullPath: '/admin/seats'
+      preLoaderRoute: typeof AdminSeatsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/flights': {
+      id: '/admin/flights'
+      path: '/flights'
+      fullPath: '/admin/flights'
+      preLoaderRoute: typeof AdminFlightsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/bookings': {
+      id: '/admin/bookings'
+      path: '/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminBookingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/airports': {
+      id: '/admin/airports'
+      path: '/airports'
+      fullPath: '/admin/airports'
+      preLoaderRoute: typeof AdminAirportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/airlines': {
+      id: '/admin/airlines'
+      path: '/airlines'
+      fullPath: '/admin/airlines'
+      preLoaderRoute: typeof AdminAirlinesRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_public/verify': {
       id: '/_public/verify'
@@ -396,6 +566,30 @@ const PublicRouteChildren: PublicRouteChildren = {
 const PublicRouteWithChildren =
   PublicRoute._addFileChildren(PublicRouteChildren)
 
+interface AdminRouteChildren {
+  AdminAirlinesRoute: typeof AdminAirlinesRoute
+  AdminAirportsRoute: typeof AdminAirportsRoute
+  AdminBookingsRoute: typeof AdminBookingsRoute
+  AdminFlightsRoute: typeof AdminFlightsRoute
+  AdminPaymentsRoute: typeof AdminPaymentsRoute
+  AdminSeatsRoute: typeof AdminSeatsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAirlinesRoute: AdminAirlinesRoute,
+  AdminAirportsRoute: AdminAirportsRoute,
+  AdminBookingsRoute: AdminBookingsRoute,
+  AdminFlightsRoute: AdminFlightsRoute,
+  AdminPaymentsRoute: AdminPaymentsRoute,
+  AdminSeatsRoute: AdminSeatsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface AuthRouteChildren {
   AuthForgotRoute: typeof AuthForgotRoute
   AuthLoginRoute: typeof AuthLoginRoute
@@ -441,6 +635,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   PublicRoute: PublicRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
 }
