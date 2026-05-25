@@ -17,7 +17,31 @@ function Home() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 hero-aurora opacity-80" />
         <div className="absolute inset-0 grid-bg opacity-30" />
+        {/* Animated floating orbs */}
+        <motion.div
+          aria-hidden
+          className="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-primary/20 blur-3xl"
+          animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden
+          className="absolute top-1/3 right-0 h-[28rem] w-[28rem] rounded-full bg-fuchsia-500/10 blur-3xl"
+          animate={{ x: [0, -30, 0], y: [0, -20, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+        />
+        {/* Plane drifting across hero */}
+        <motion.div
+          aria-hidden
+          className="absolute top-24 text-primary/40"
+          initial={{ x: "-10%" }}
+          animate={{ x: "110%" }}
+          transition={{ duration: 26, repeat: Infinity, ease: "linear" }}
+        >
+          <Plane className="h-8 w-8 rotate-12" />
+        </motion.div>
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 pt-20 pb-32">
+
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
