@@ -80,13 +80,14 @@ function gen(): Flight[] {
 export const flights: Flight[] = gen();
 
 export const popularDestinations = [
-  { city: "Dubai",     code: "DXB", price: 650, image: "url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=70') center/cover" },
-  { city: "London",    code: "LHR", price: 780, image: "url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=70') center/cover" },
-  { city: "Tokyo",     code: "HND", price: 920, image: "url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=70') center/cover" },
-  { city: "Singapore", code: "SIN", price: 540, image: "url('https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=70') center/cover" },
-  { city: "Paris",     code: "CDG", price: 690, image: "url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=70') center/cover" },
-  { city: "New York",  code: "JFK", price: 850, image: "url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=70') center/cover" },
+  { city: "Dubai",     code: "DXB", price: 650, image: "url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=70')" },
+  { city: "London",    code: "LHR", price: 780, image: "url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=70')" },
+  { city: "Tokyo",     code: "HND", price: 920, image: "url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=70')" },
+  { city: "Singapore", code: "SIN", price: 540, image: "url('https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=70')" },
+  { city: "Paris",     code: "CDG", price: 690, image: "url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=70')" },
+  { city: "New York",  code: "JFK", price: 850, image: "url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=70')" },
 ];
+
 
 
 export const testimonials = [
