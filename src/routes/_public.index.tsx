@@ -2,8 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { FlightSearchForm } from "@/components/flights/FlightSearchForm";
 import { popularDestinations, testimonials } from "@/lib/mockData";
 import { motion } from "motion/react";
-import { ShieldCheck, Sparkles, Globe2, Star } from "lucide-react";
+import { ShieldCheck, Sparkles, Globe2, Star, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 
 export const Route = createFileRoute("/_public/")({
   component: Home,
