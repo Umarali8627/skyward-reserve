@@ -80,13 +80,14 @@ function gen(): Flight[] {
 export const flights: Flight[] = gen();
 
 export const popularDestinations = [
-  { city: "Dubai", code: "DXB", price: 650, image: "linear-gradient(135deg,#f59e0b,#ef4444)" },
-  { city: "London", code: "LHR", price: 780, image: "linear-gradient(135deg,#3b82f6,#6366f1)" },
-  { city: "Tokyo", code: "HND", price: 920, image: "linear-gradient(135deg,#ec4899,#8b5cf6)" },
-  { city: "Singapore", code: "SIN", price: 540, image: "linear-gradient(135deg,#10b981,#06b6d4)" },
-  { city: "Paris", code: "CDG", price: 690, image: "linear-gradient(135deg,#a855f7,#ec4899)" },
-  { city: "New York", code: "JFK", price: 850, image: "linear-gradient(135deg,#0ea5e9,#22d3ee)" },
+  { city: "Dubai",     code: "DXB", price: 650, image: "url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=70') center/cover" },
+  { city: "London",    code: "LHR", price: 780, image: "url('https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=70') center/cover" },
+  { city: "Tokyo",     code: "HND", price: 920, image: "url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=70') center/cover" },
+  { city: "Singapore", code: "SIN", price: 540, image: "url('https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=70') center/cover" },
+  { city: "Paris",     code: "CDG", price: 690, image: "url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=70') center/cover" },
+  { city: "New York",  code: "JFK", price: 850, image: "url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=70') center/cover" },
 ];
+
 
 export const testimonials = [
   { name: "Aisha Khan", role: "Frequent Flyer", text: "The smoothest booking experience I've had. Beautiful UI and lightning fast.", rating: 5 },
