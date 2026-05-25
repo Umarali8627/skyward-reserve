@@ -83,7 +83,7 @@ function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.05 }}
-              className="group relative h-44 rounded-2xl overflow-hidden cursor-pointer border border-border/60"
+              className="group relative h-44 rounded-2xl overflow-hidden cursor-pointer border border-border/60 bg-cover bg-center"
               style={{ backgroundImage: d.image }}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
