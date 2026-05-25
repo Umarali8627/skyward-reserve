@@ -1,6 +1,10 @@
 import axios from "axios";
 
-export const API_BASE = "http://localhost:8000/api/v1";
+// FastAPI backend base URL (no /api/v1 prefix on these routers).
+// Override in dev by setting VITE_API_BASE in your environment.
+export const API_BASE =
+  (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_API_BASE) ||
+  "http://localhost:8000";
 
 export const api = axios.create({
   baseURL: API_BASE,
@@ -15,39 +19,82 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Auth
+// ───────────── Users / Auth ─────────────
 export const authApi = {
-  register: (data: { username: string; email: string; password: string }) =>
-    api.post("/auth/register", data),
-  login: (data: { email: string; password: string }) => api.post("/auth/login", data),
-  me: () => api.get("/auth/me"),
+  register: (data: { username: string; email: string; password: string; [k: string]: unknown }) =>
+    api.post("/Users/register", data),
+  login: (data: { email: string; password: string }) => api.post("/Users/login", data),
+  isAuth: () => api.get("/Users/is_auth"),
 };
 
-// Users
-export const userApi = {
-  profile: () => api.get("/users/profile"),
-  bookings: () => api.get("/users/bookings"),
+// ───────────── Airlines ─────────────
+export const airlineApi = {
+  create: (data: unknown) => api.post("/airline/create", data),
+  list: () => api.get("/airline/all"),
+  get: (id: string | number) => api.get(`/airline/${id}`),
+  searchByName: (name: string) => api.get(`/airline/search/${encodeURIComponent(name)}`),
+  update: (id: string | number, data: unknown) => api.put(`/airline/update/${id}`, data),
+  remove: (id: string | number) => api.delete(`/airline/delete/${id}`),
 };
 
-// Flights
+// ───────────── Airports ─────────────
+export const airportApi = {
+  create: (data: unknown) => api.post("/airport/create", data),
+  byName: (name: string) => api.get(`/airport/name/${encodeURIComponent(name)}`),
+  list: () => api.get("/airport/all"),
+  get: (id: string | number) => api.get(`/airport/id/${id}`),
+  update: (id: string | number, data: unknown) => api.put(`/airport/update/${id}`, data),
+  remove: (id: string | number) => api.delete(`/airport/delete/${id}`),
+};
+
+// ───────────── Flights ─────────────
 export const flightApi = {
-  list: () => api.get("/flights"),
-  search: (params: Record<string, string>) => api.get("/flights/search", { params }),
-  get: (id: string) => api.get(`/flights/${id}`),
+  create: (data: unknown) => api.post("/flights/create", data),
+  list: () => api.get("/flights/all"),
+  get: (id: string | number) => api.get(`/flights/id/${id}`),
+  update: (id: string | number, data: unknown) => api.put(`/flights/update/${id}`, data),
+  // Backend route is /flights/dletete/{id} (typo preserved to match server).
+  remove: (id: string | number) => api.delete(`/flights/dletete/${id}`),
+  // Client-side search helper over /flights/all
+  search: async (params: Record<string, string>) => {
+    const res = await api.get("/flights/all");
+    return { ...res, data: res.data, params };
+  },
 };
 
-// Bookings
+// ───────────── Bookings ─────────────
 export const bookingApi = {
-  create: (data: unknown) => api.post("/bookings", data),
-  get: (id: string) => api.get(`/bookings/${id}`),
+  create: (data: unknown) => api.post("/bookings/create", data),
+  list: () => api.get("/bookings/"),
+  get: (id: string | number) => api.get(`/bookings/${id}`),
+  update: (id: string | number, data: unknown) => api.put(`/bookings/${id}`, data),
+  remove: (id: string | number) => api.delete(`/bookings/${id}`),
 };
 
-// Payments
-export const paymentApi = {
-  create: (data: unknown) => api.post("/payments", data),
-};
-
-// Seats
+// ───────────── Seats ─────────────
 export const seatApi = {
-  forFlight: (flightId: string) => api.get(`/seats/flight/${flightId}`),
+  create: (data: unknown) => api.post("/seats/create", data),
+  list: () => api.get("/seats/"),
+  get: (id: string | number) => api.get(`/seats/${id}`),
+  update: (id: string | number, data: unknown) => api.put(`/seats/${id}`, data),
+  remove: (id: string | number) => api.delete(`/seats/${id}`),
+  // Backwards-compat helper used by SeatSelector — filter all seats by flight on the client.
+  forFlight: async (flightId: string | number) => {
+    const res = await api.get("/seats/");
+    const data = Array.isArray(res.data)
+      ? res.data.filter((s: any) => String(s.flight_id ?? s.flightId) === String(flightId))
+      : res.data;
+    return { ...res, data };
+  },
+};
+
+// ───────────── Payments ─────────────
+export const paymentApi = {
+  list: () => api.get("/payments/"),
+  create: (data: unknown) => api.post("/payments/", data),
+  get: (paymentId: string | number) => api.get(`/payments/${paymentId}`),
+  update: (paymentId: string | number, data: unknown) => api.put(`/payments/${paymentId}`, data),
+  process: (paymentId: string | number) => api.post(`/payments/${paymentId}/process`),
+  cancel: (paymentId: string | number) => api.post(`/payments/${paymentId}/cancel`),
+  forBooking: (bookingId: string | number) => api.get(`/payments/booking/${bookingId}`),
 };
