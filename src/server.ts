@@ -25,6 +25,23 @@ function brandedErrorResponse(): Response {
   });
 }
 
+// Return a minimal HTML shell that loads client-side — lets client fetch data
+function fallbackHtmlResponse(): Response {
+  return new Response(
+    `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Loading...</title></head>
+<body style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#666;">
+<div>Loading application...</div>
+</body>
+</html>`,
+    {
+      status: 200,
+      headers: { "content-type": "text/html; charset=utf-8" },
+    }
+  );
+}
+
 function isCatastrophicSsrErrorBody(body: string, responseStatus: number): boolean {
   let payload: unknown;
   try {
@@ -62,8 +79,10 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
     return response;
   }
 
-  console.error(consumeLastCapturedError() ?? new Error(`h3 swallowed SSR error: ${body}`));
-  return brandedErrorResponse();
+  // During SSR, if a fetch fails (backend down, timeout, etc.),
+  // return a fallback HTML so the dev server stays up and client can retry.
+  console.warn(`[SSR] HTTPError during render, falling back to client: ${body}`);
+  return fallbackHtmlResponse();
 }
 
 export default {

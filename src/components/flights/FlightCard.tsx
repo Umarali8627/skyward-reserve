@@ -1,4 +1,4 @@
-import type { Flight } from "@/lib/mockData";
+import type { Flight } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@tanstack/react-router";
@@ -9,6 +9,7 @@ const statusColor: Record<Flight["status"], string> = {
   boarding: "bg-blue-500/15 text-blue-500 border-blue-500/30",
   delayed: "bg-amber-500/15 text-amber-500 border-amber-500/30",
   cancelled: "bg-red-500/15 text-red-500 border-red-500/30",
+  pending: "bg-slate-500/15 text-slate-500 border-slate-500/30",
 };
 
 function fmtTime(iso: string) {
@@ -60,7 +61,7 @@ export function FlightCard({ flight }: { flight: Flight }) {
             <div className="text-xs text-muted-foreground mt-1">{flight.seatsLeft} seats left · {flight.seatClass}</div>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-gradient-brand">${flight.price}</div>
+            <div className="text-2xl font-bold text-gradient-brand">PKR {flight.price}</div>
             <Link to="/booking/$flightId" params={{ flightId: flight.id }}>
               <Button size="sm" className="mt-2 gradient-brand text-white border-0">Book now</Button>
             </Link>

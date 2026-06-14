@@ -1,3 +1,4 @@
+import { authApi } from "@/lib/api";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -13,41 +14,37 @@ type AuthState = {
   setUser: (u: User | null) => void;
 };
 
-// Mock auth — wires to /auth/* but falls back to local mock so preview works without backend.
 export const useAuth = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
       token: null,
       async login(email, password) {
-        // Pretend call. If email contains "admin" => admin role.
-        await new Promise((r) => setTimeout(r, 600));
-        const role: Role = email.toLowerCase().includes("admin") ? "admin" : "customer";
-        const user: User = {
-          id: crypto.randomUUID(),
-          username: email.split("@")[0],
-          email,
-          role,
-        };
-        const token = btoa(`${email}:${Date.now()}`);
+        const res = await authApi.login({ email, password });
+        const token = res.data.token as string;
+        const u = res.data.user as { id: number; username: string; email: string; role: string };
+        const role: Role = u.role === "admin" ? "admin" : "customer";
+        const user: User = { id: String(u.id), username: u.username, email: u.email, role };
         localStorage.setItem("skyline_token", token);
         set({ user, token });
-        void password;
       },
       async register(username, email, password) {
-        await new Promise((r) => setTimeout(r, 600));
-        const role: Role = email.toLowerCase().includes("admin") ? "admin" : "customer";
-        const user: User = { id: crypto.randomUUID(), username, email, role };
-        const token = btoa(`${email}:${Date.now()}`);
+        await authApi.register({ user_name: username, email, password });
+        const res = await authApi.login({ email, password });
+        const token = res.data.token as string;
+        const u = res.data.user as { id: number; username: string; email: string; role: string };
+        const role: Role = u.role === "admin" ? "admin" : "customer";
+        const user: User = { id: String(u.id), username: u.username, email: u.email, role };
         localStorage.setItem("skyline_token", token);
         set({ user, token });
-        void password;
       },
       logout() {
         localStorage.removeItem("skyline_token");
         set({ user: null, token: null });
       },
-      setUser(user) { set({ user }); },
+      setUser(user) {
+        set({ user });
+      },
     }),
     { name: "skyline-auth" },
   ),

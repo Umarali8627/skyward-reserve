@@ -21,32 +21,34 @@ function Login() {
     try {
       await login(email, password);
       toast.success("Welcome back!");
-      nav({ to: email.toLowerCase().includes("admin") ? "/admin" : "/dashboard" });
+      const role = useAuth.getState().user?.role;
+      nav({ to: role === "admin" ? "/admin" : "/dashboard" });
     } catch {
       toast.error("Login failed");
     } finally { setLoading(false); }
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold">Sign in</h1>
-      <p className="mt-2 text-sm text-muted-foreground">Welcome back. Enter your details below.</p>
-      <p className="mt-2 text-xs text-muted-foreground">Tip: include "admin" in email to see the admin dashboard.</p>
-      <form onSubmit={submit} className="mt-8 space-y-4">
-        <div><Label>Email</Label><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-        <div>
-          <div className="flex justify-between"><Label>Password</Label>
-            <Link to="/auth/forgot" className="text-xs text-primary hover:underline">Forgot?</Link>
+    <div className="min-h-screen flex items-center justify-center px-6">
+      <div className="w-full max-w-md">
+        <h1 className="text-3xl font-bold">Sign in</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Welcome back. Enter your details below.</p>
+        <form onSubmit={submit} className="mt-8 space-y-4">
+          <div><Label>Email</Label><Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></div>
+          <div>
+            <div className="flex justify-between"><Label>Password</Label>
+              <Link to="/auth/forgot" className="text-xs text-primary hover:underline">Forgot?</Link>
+            </div>
+            <Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
-          <Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
-        <Button type="submit" disabled={loading} className="w-full gradient-brand text-white border-0">
-          {loading ? "Signing in..." : "Sign in"}
-        </Button>
-      </form>
-      <p className="mt-6 text-sm text-center text-muted-foreground">
-        Don't have an account? <Link to="/auth/register" className="text-primary hover:underline">Create one</Link>
-      </p>
+          <Button type="submit" disabled={loading} className="w-full gradient-brand text-white border-0">
+            {loading ? "Signing in..." : "Sign in"}
+          </Button>
+        </form>
+        <p className="mt-6 text-sm text-center text-muted-foreground">
+          Don't have an account? <Link to="/auth/register" className="text-primary hover:underline">Create one</Link>
+        </p>
+      </div>
     </div>
   );
 }

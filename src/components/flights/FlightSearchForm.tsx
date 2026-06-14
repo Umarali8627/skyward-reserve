@@ -2,19 +2,34 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { airports } from "@/lib/mockData";
+import type { Airport } from "@/lib/lookups";
+import { fetchAirports } from "@/lib/lookups";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowRightLeft, Plane, Search, Users } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function FlightSearchForm({ compact = false }: { compact?: boolean }) {
   const navigate = useNavigate();
-  const [from, setFrom] = useState("DXB");
-  const [to, setTo] = useState("LHR");
+  const [airports, setAirports] = useState<Airport[]>([]);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [depart, setDepart] = useState(() => new Date().toISOString().slice(0, 10));
   const [ret, setRet] = useState("");
   const [pax, setPax] = useState("1");
   const [cls, setCls] = useState("economy");
+
+  useEffect(() => {
+    let alive = true;
+    fetchAirports().then((items) => {
+      if (!alive) return;
+      setAirports(items);
+      if (!from && items[0]) setFrom(items[0].code);
+      if (!to && items[1]) setTo(items[1].code);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [from, to]);
 
   const swap = () => { setFrom(to); setTo(from); };
 
@@ -34,7 +49,7 @@ export function FlightSearchForm({ compact = false }: { compact?: boolean }) {
       <div className="grid gap-3 md:grid-cols-12 items-end">
         <div className="md:col-span-3">
           <Label className="text-xs uppercase tracking-wider text-muted-foreground">From</Label>
-          <AirportSelect value={from} onChange={setFrom} />
+          <AirportSelect airports={airports} value={from} onChange={setFrom} />
         </div>
         <div className="md:col-span-1 flex md:justify-center">
           <Button type="button" variant="ghost" size="icon" onClick={swap} className="rounded-full">
@@ -43,7 +58,7 @@ export function FlightSearchForm({ compact = false }: { compact?: boolean }) {
         </div>
         <div className="md:col-span-3">
           <Label className="text-xs uppercase tracking-wider text-muted-foreground">To</Label>
-          <AirportSelect value={to} onChange={setTo} />
+          <AirportSelect airports={airports} value={to} onChange={setTo} />
         </div>
         <div className="md:col-span-2">
           <Label className="text-xs uppercase tracking-wider text-muted-foreground">Departure</Label>
@@ -85,7 +100,15 @@ export function FlightSearchForm({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function AirportSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function AirportSelect({
+  airports,
+  value,
+  onChange,
+}: {
+  airports: Airport[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger><SelectValue /></SelectTrigger>

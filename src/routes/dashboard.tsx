@@ -16,6 +16,7 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 const items = [
+  // Use absolute paths so navigation works correctly
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { to: "/dashboard/bookings", label: "My Bookings", icon: Ticket },
   { to: "/dashboard/payments", label: "Payments", icon: CreditCard },

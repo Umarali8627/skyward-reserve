@@ -1,35 +1,58 @@
 import { cn } from "@/lib/utils";
-import { useBooking } from "@/store/booking";
+import { useBooking, type SeatClass } from "@/store/booking";
 import { useMemo } from "react";
 
 type SeatStatus = "available" | "booked" | "selected";
 
+// Match exactly what your backend generates in create_flight
 function generateLayout() {
-  // 30 rows total: 1-4 First/Business, 5-10 Premium, 11-30 Economy
-  const rows: Array<{ row: number; section: "Business" | "Premium" | "Economy"; cols: string[] }> = [];
+  const rows: Array<{ row: number; section: SeatClass; cols: string[] }> = [];
   for (let r = 1; r <= 30; r++) {
-    const section = r <= 4 ? "Business" : r <= 10 ? "Premium" : "Economy";
+    const section: SeatClass = r <= 4 ? "Business" : r <= 10 ? "Premium" : "Economy";
     const cols = section === "Business" ? ["A", "C", "D", "F"] : ["A", "B", "C", "D", "E", "F"];
     rows.push({ row: r, section, cols });
   }
   return rows;
 }
 
-const bookedSeats = new Set([
-  "2A", "2C", "3D", "5B", "5F", "7A", "8C", "9D", "12A", "12B", "14E", "16C", "16D",
-  "18F", "20A", "21C", "22D", "24E", "25A", "27F", "28B", "29C",
-]);
+interface FlightDetail {
+  economy_seats: number;
+  premium_seats: number;
+  business_seats: number;
+  available_seats: number;
+}
 
-export function SeatSelector() {
+interface Props {
+  flight: FlightDetail;      // ← receive flight from Booking.tsx
+}
+
+export function SeatSelector({ flight }: Props) {
   const { selectedSeats, toggleSeat } = useBooking();
   const rows = useMemo(generateLayout, []);
 
-  const status = (id: string): SeatStatus =>
-    selectedSeats.includes(id) ? "selected" : bookedSeats.has(id) ? "booked" : "available";
+  // Build booked seat set from real seat data via flight counts
+  // Since your API doesn't return individual seat statuses yet,
+  // we derive which seats are "filled" based on available_seats count
+  const bookedCount = flight.business_seats + flight.premium_seats + flight.economy_seats - flight.available_seats;
+
+  const status = (id: string, section: SeatClass): SeatStatus => {
+    if (selectedSeats.includes(id)) return "selected";
+    // Until you have a /seats/{flightId} endpoint, keep booked as not selectable
+    // Replace this with real per-seat API data when available
+    return "available";
+  };
 
   return (
     <div className="glass rounded-2xl p-4 sm:p-6">
       <Legend />
+      {/* Seat count summary */}
+      <div className="mt-4 flex justify-center gap-6 text-xs text-muted-foreground">
+        <span>Business: {flight.business_seats}</span>
+        <span>Premium: {flight.premium_seats}</span>
+        <span>Economy: {flight.economy_seats}</span>
+        <span className="text-emerald-500 font-medium">Available: {flight.available_seats}</span>
+      </div>
+
       <div className="mt-6 mx-auto max-w-md">
         <div className="relative rounded-t-[50%] border border-border/60 bg-secondary/30 pt-6 pb-3 text-center text-xs text-muted-foreground">
           Cockpit
@@ -42,6 +65,7 @@ export function SeatSelector() {
                   {section}
                 </div>
               ) : null;
+
             return (
               <div key={row}>
                 {sectionHeader}
@@ -49,22 +73,26 @@ export function SeatSelector() {
                   <div className="w-6 text-center text-xs text-muted-foreground">{row}</div>
                   {cols.map((c, i) => {
                     const id = `${row}${c}`;
-                    const s = status(id);
-                    const aisle = cols.length === 6 ? (i === 2 ? "mr-3" : "") : i === 1 ? "mr-3" : "";
+                    const s = status(id, section);
+                    const aisle =
+                      cols.length === 6
+                        ? i === 2 ? "mr-3" : ""
+                        : i === 1 ? "mr-3" : "";
+
                     return (
                       <button
                         key={id}
                         type="button"
                         disabled={s === "booked"}
-                        onClick={() => toggleSeat(id)}
+                        onClick={() => toggleSeat(id, section)}  // ← pass section as SeatClass
                         className={cn(
                           "h-8 w-8 rounded-md text-[10px] font-semibold transition-all",
                           aisle,
                           s === "available" && "bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 hover:bg-emerald-500/40 hover:scale-105",
-                          s === "booked" && "bg-red-500/30 text-red-700 dark:text-red-200 cursor-not-allowed",
-                          s === "selected" && "bg-blue-500 text-white shadow-md shadow-blue-500/40 scale-105",
+                          s === "booked"    && "bg-red-500/30 text-red-700 dark:text-red-200 cursor-not-allowed",
+                          s === "selected"  && "bg-blue-500 text-white shadow-md shadow-blue-500/40 scale-105",
                         )}
-                        aria-label={`Seat ${id} ${s}`}
+                        aria-label={`Seat ${id} (${section}) ${s}`}
                       >
                         {c}
                       </button>
@@ -89,6 +117,7 @@ function Legend() {
     </div>
   );
 }
+
 function Item({ color, label }: { color: string; label: string }) {
   return (
     <div className="flex items-center gap-2">

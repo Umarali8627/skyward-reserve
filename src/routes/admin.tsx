@@ -17,6 +17,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 const items = [
+  // Use absolute paths so navigation works correctly
   { to: "/admin", label: "Analytics", icon: BarChart3 },
   { to: "/admin/flights", label: "Flights", icon: Plane },
   { to: "/admin/airports", label: "Airports", icon: Building2 },

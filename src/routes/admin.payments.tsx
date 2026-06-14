@@ -1,29 +1,57 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { CrudPage } from "@/components/admin/CrudPage";
 import { Badge } from "@/components/ui/badge";
+import { useAdmin } from "@/store/admin";
 
 export const Route = createFileRoute("/admin/payments")({ component: AdminPayments });
 
-const payments = Array.from({ length: 14 }).map((_, i) => ({
-  id: `PMT-${2000 + i}`,
-  customer: ["Aisha","Daniel","Maria","Yuki","Omar"][i % 5],
-  method: ["Visa ••4242","Stripe","JazzCash","EasyPaisa","Mastercard ••1234"][i % 5],
-  amount: 250 + (i * 47) % 1300,
-  status: (["paid","paid","refunded","pending","paid"] as const)[i % 5],
-  date: `2026-05-${(i + 1).toString().padStart(2,"0")}`,
-}));
-
 function AdminPayments() {
+  const { payments, loading, fetchAllPayments } = useAdmin();
+
+  useEffect(() => {
+    fetchAllPayments();
+  }, [fetchAllPayments]);
+
+  const data = payments.map((p) => ({
+    id: `PMT-${p.pay_id}`,
+    booking: `BK-${p.booking_id}`,
+    amount: p.amount,
+    status: p.payment_status.charAt(0).toUpperCase() + p.payment_status.slice(1),
+    date: new Date(p.pay_time).toLocaleDateString(),
+  }));
+
   return (
-    <CrudPage title="Manage payments" subtitle="All inbound transactions."
-      rows={payments} searchKeys={["id","customer","method"]}
+    <CrudPage
+      title="Manage payments"
+      subtitle="All inbound transactions."
+      rows={data}
+      searchKeys={["id", "booking"]}
+      loading={loading}
       columns={[
         { key: "id", header: "ID" },
-        { key: "customer", header: "Customer" },
-        { key: "method", header: "Method" },
+        { key: "booking", header: "Booking" },
         { key: "amount", header: "Amount", render: (r) => `$${r.amount}` },
-        { key: "status", header: "Status", render: (r) => <Badge variant="outline" className="capitalize">{r.status}</Badge> },
+        {
+          key: "status",
+          header: "Status",
+          render: (r) => (
+            <Badge
+              variant="outline"
+              className={`capitalize ${
+                r.status === "Completed"
+                  ? "bg-green-50 text-green-700 border-green-200"
+                  : r.status === "Pending"
+                  ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                  : "bg-red-50 text-red-700 border-red-200"
+              }`}
+            >
+              {r.status}
+            </Badge>
+          ),
+        },
         { key: "date", header: "Date" },
-      ]} />
+      ]}
+    />
   );
 }

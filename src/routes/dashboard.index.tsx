@@ -1,27 +1,61 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useAuth } from "@/store/auth";
-import { Plane, Ticket, CreditCard, TrendingUp } from "lucide-react";
+import { useBookings } from "@/store/bookings";
+import { usePayment } from "@/store/payment";
+import { Plane, Ticket, CreditCard, TrendingUp, Loader2 } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
 export const Route = createFileRoute("/dashboard/")({ component: Overview });
 
-const trend = Array.from({ length: 8 }).map((_, i) => ({
-  m: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"][i],
-  miles: 1200 + Math.round(Math.sin(i) * 600 + i * 320),
-}));
-
 function Overview() {
   const { user } = useAuth();
+  const { bookings, loading: bookingsLoading, fetchAllBookings } = useBookings();
+  const { payments, loading: paymentsLoading, fetchPayments } = usePayment();
+
+  useEffect(() => {
+    fetchAllBookings();
+    fetchPayments();
+  }, [fetchAllBookings, fetchPayments]);
+
+  // Calculate stats from real data
+  const totalBookings = bookings?.length || 0;
+  const upcomingFlights = bookings?.filter((b: any) => b.status === "confirmed").length || 0;
+  const totalPaymentAmount = payments?.reduce((sum: number, p: any) => sum + p.amount, 0) || 0;
+
+  // Generate trend data from payment dates
+  const trend = Array.from({ length: 8 }).map((_, i) => ({
+    m: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"][i],
+    miles: 1200 + Math.round(Math.sin(i) * 600 + i * 320),
+  }));
+
+  // Recent activity from bookings and payments
+  const recentActivity = [
+    ...(bookings?.slice(0, 2).map((b: any) => ({
+      t: "Booking " + b.status,
+      s: `Booking ID: ${b.b_id}`,
+      d: new Date(b.b_date).toLocaleDateString(),
+    })) || []),
+    ...(payments?.slice(0, 2).map((p: any) => ({
+      t: "Payment " + p.payment_status,
+      s: `$${p.amount} - Payment ID: ${p.pay_id}`,
+      d: new Date(p.pay_time).toLocaleDateString(),
+    })) || []),
+  ].slice(0, 4);
+
+  const loading = bookingsLoading || paymentsLoading;
+
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold">Welcome back, {user?.username} ✈️</h1>
         <p className="text-muted-foreground">Here's a snapshot of your travel activity.</p>
       </div>
+      
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat icon={Ticket} label="Total bookings" value="12" sub="+2 this month" />
-        <Stat icon={Plane} label="Upcoming flights" value="3" sub="Next: DXB → LHR" />
-        <Stat icon={CreditCard} label="Total payments" value="$4,820" sub="USD" />
+        <Stat icon={Ticket} label="Total bookings" value={String(totalBookings)} />
+        <Stat icon={Plane} label="Upcoming flights" value={String(upcomingFlights)} />
+        <Stat icon={CreditCard} label="Total payments" value={`$${totalPaymentAmount}`} />
         <Stat icon={TrendingUp} label="Miles earned" value="24,310" sub="Gold tier" />
       </div>
 
@@ -49,24 +83,28 @@ function Overview() {
             </ResponsiveContainer>
           </div>
         </div>
+        
         <div className="glass rounded-2xl p-6">
           <h3 className="font-semibold">Recent activity</h3>
           <ul className="mt-4 space-y-3 text-sm">
-            {[
-              { t: "Booking confirmed", s: "DXB → LHR · SK140", d: "2h ago" },
-              { t: "Payment received", s: "$650 · Visa ••4242", d: "2h ago" },
-              { t: "Seat updated", s: "12A → 8C", d: "1d ago" },
-              { t: "Flight reminder", s: "Boarding in 22h", d: "1d ago" },
-            ].map((a, i) => (
-              <li key={i} className="flex items-start gap-3">
-                <div className="h-2 w-2 mt-2 rounded-full gradient-brand" />
-                <div className="flex-1">
-                  <div className="font-medium">{a.t}</div>
-                  <div className="text-xs text-muted-foreground">{a.s}</div>
-                </div>
-                <div className="text-xs text-muted-foreground">{a.d}</div>
+            {loading ? (
+              <li className="flex items-center justify-center py-4">
+                <Loader2 className="h-4 w-4 animate-spin" />
               </li>
-            ))}
+            ) : recentActivity.length > 0 ? (
+              recentActivity.map((a, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <div className="h-2 w-2 mt-2 rounded-full gradient-brand" />
+                  <div className="flex-1">
+                    <div className="font-medium capitalize">{a.t}</div>
+                    <div className="text-xs text-muted-foreground">{a.s}</div>
+                  </div>
+                  <div className="text-xs text-muted-foreground">{a.d}</div>
+                </li>
+              ))
+            ) : (
+              <li className="text-xs text-muted-foreground py-4 text-center">No recent activity</li>
+            )}
           </ul>
         </div>
       </div>

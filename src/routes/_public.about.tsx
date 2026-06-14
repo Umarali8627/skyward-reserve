@@ -3,6 +3,27 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/_public/about")({ component: About });
 
 function About() {
+  const team = [
+    {
+      name: "Umar Ali",
+      role: "Full Stack AI Developer",
+      desc: "Built backend architecture and merged frontend",
+      edu: "BSCS 6th semester, Northern University Nowshera",
+    },
+    {
+      name: "Rafi Ullah",
+      role: "Frontend Developer",
+      desc: "Designed frontend pages",
+      edu: "BSCS 6th semester, Northern University Nowshera",
+    },
+    {
+      name: "M. Ismail",
+      role: "Frontend Developer",
+      desc: "Tested frontend pages",
+      edu: "BSCS 6th semester, Northern University Nowshera",
+    },
+  ];
+
   return (
     <div className="mx-auto max-w-5xl px-6 py-16">
       <div className="text-xs uppercase tracking-[0.2em] text-primary">About us</div>
@@ -27,6 +48,28 @@ function About() {
         <p>To make air travel feel effortless, transparent and human — from the first search to the final boarding pass.</p>
         <h2>What sets us apart</h2>
         <p>Obsessive attention to design, real-time fare intelligence, and a customer support team that actually answers.</p>
+      </div>
+
+      <div className="mt-16">
+        <h2 className="text-3xl font-bold mb-8">Meet the team</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          {team.map((member, idx) => {
+            const colors = ['bg-blue-500', 'bg-purple-500', 'bg-indigo-500'];
+            return (
+              <div key={member.name} className="glass rounded-2xl p-6 text-center">
+                <div className="flex justify-center mb-4">
+                  <div className={`h-16 w-16 rounded-full ${colors[idx]} flex items-center justify-center text-white font-bold text-lg`}>
+                    {member.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                </div>
+                <div className="font-bold text-lg">{member.name}</div>
+                <div className="text-sm text-primary font-semibold mt-1">{member.role}</div>
+                <p className="text-sm text-muted-foreground mt-2">{member.desc}</p>
+                <div className="text-xs text-muted-foreground mt-3 border-t border-border/60 pt-3">{member.edu}</div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
