@@ -50,7 +50,7 @@ function transformApiFlightData(apiData: any): Flight | null {
       durationMin: parseInt(apiData.duration_min || apiData.durationMin || "180"),
       price: parseFloat(apiData.economy_price || apiData.fare || "200$"),
       seatClass: (apiData.seat_class || apiData.class || apiData.seatClass || "economy").toLowerCase(),
-      seatsLeft: parseInt(apiData.seats_available || apiData.seatsLeft || apiData.total_seats || "50"),
+      seatsLeft: parseInt(apiData.available_seats || apiData.seatsLeft || apiData.total_seats || "50"),
       status: (apiData.status || "on-time") as any,
     };
   } catch (err) {
