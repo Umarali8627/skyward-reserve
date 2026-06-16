@@ -4,7 +4,7 @@ import axios from "axios";
 // Override in dev by setting VITE_API_BASE in your environment.
 export const API_BASE =
   (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_API_BASE) ||
-  "http://localhost:8000";
+  "https://airline-reservation-system.fastapicloud.dev/";
 
 export const api = axios.create({
   baseURL: API_BASE,
@@ -18,6 +18,33 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+// ───────────── Admin ─────────────
+export const adminApi = {
+  // Flights
+  flights: () => api.get("/flights/all"),
+  createFlight: (data: unknown) => api.post("/flights/create", data),
+  updateFlight: (id: number, data: unknown) => api.put(`/flights/update/${id}`, data),
+  deleteFlight: (id: number) => api.delete(`/flights/dletete/${id}`), // typo preserved to match server
+
+  // Airlines
+  airlines: () => api.get("/airline/all"),
+  createAirline: (data: unknown) => api.post("/airline/create", data),
+  updateAirline: (id: number, data: unknown) => api.put(`/airline/update/${id}`, data),
+  deleteAirline: (id: number) => api.delete(`/airline/delete/${id}`),
+
+  // Airports
+  airports: () => api.get("/airport/all"),
+  createAirport: (data: unknown) => api.post("/airport/create", data),
+  updateAirport: (id: number, data: unknown) => api.put(`/airport/update/${id}`, data),
+  deleteAirport: (id: number) => api.delete(`/airport/delete/${id}`),
+
+  // Bookings
+  allBookings: () => api.get("/bookings/"),
+  updateBooking: (id: number, data: unknown) => api.put(`/bookings/${id}`, data),
+
+  // Payments
+  allPayments: () => api.get("/payments/"),
+};
 
 // ───────────── Users / Auth ─────────────
 export const authApi = {
