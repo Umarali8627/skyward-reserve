@@ -1,7 +1,5 @@
 import axios from "axios";
 
-// FastAPI backend base URL (no /api/v1 prefix on these routers).
-// Override in dev by setting VITE_API_BASE in your environment.
 export const API_BASE =
   (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_API_BASE) ||
   "https://airline-reservation-system.fastapicloud.dev/";
@@ -18,13 +16,14 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
 // ───────────── Admin ─────────────
 export const adminApi = {
   // Flights
   flights: () => api.get("/flights/all"),
   createFlight: (data: unknown) => api.post("/flights/create", data),
   updateFlight: (id: number, data: unknown) => api.put(`/flights/update/${id}`, data),
-  deleteFlight: (id: number) => api.delete(`/flights/dletete/${id}`), // typo preserved to match server
+  deleteFlight: (id: number) => api.delete(`/flights/dletete/${id}`),
 
   // Airlines
   airlines: () => api.get("/airline/all"),
@@ -44,11 +43,15 @@ export const adminApi = {
 
   // Payments
   allPayments: () => api.get("/payments/"),
+
+  // Users
+  allUsers: () => api.get("/Users/all"),
 };
 
 // ───────────── Users / Auth ─────────────
 export const authApi = {
-  register: (data: { username: string; email: string; password: string; [k: string]: unknown }) =>
+  // Backend UserRegisterSchema uses `user_name` (underscore)
+  register: (data: { user_name: string; email: string; password: string; [k: string]: unknown }) =>
     api.post("/Users/register", data),
   login: (data: { email: string; password: string }) => api.post("/Users/login", data),
   isAuth: () => api.get("/Users/is_auth"),
@@ -80,9 +83,7 @@ export const flightApi = {
   list: () => api.get("/flights/all"),
   get: (id: string | number) => api.get(`/flights/id/${id}`),
   update: (id: string | number, data: unknown) => api.put(`/flights/update/${id}`, data),
-  // Backend route is /flights/dletete/{id} (typo preserved to match server).
   remove: (id: string | number) => api.delete(`/flights/dletete/${id}`),
-  // Client-side search helper over /flights/all
   search: async (params: Record<string, string>) => {
     const res = await api.get("/flights/all");
     return { ...res, data: res.data, params };
@@ -105,7 +106,6 @@ export const seatApi = {
   get: (id: string | number) => api.get(`/seats/${id}`),
   update: (id: string | number, data: unknown) => api.put(`/seats/${id}`, data),
   remove: (id: string | number) => api.delete(`/seats/${id}`),
-  // Backwards-compat helper used by SeatSelector — filter all seats by flight on the client.
   forFlight: async (flightId: string | number) => {
     const res = await api.get("/seats/");
     const data = Array.isArray(res.data)
